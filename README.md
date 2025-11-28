@@ -4,6 +4,9 @@
 
 ComfyUI的交互式图像剪裁节点，支持可视化调整和所见即所得的剪裁效果。
 
+<img width="1779" height="729" alt="ScreenShot_2025-11-28_112808_369" src="https://github.com/user-attachments/assets/a9abb333-c017-4d2b-8d36-086638e590e2" />
+
+
 ## 安装
 
 1. 将此文件夹复制到 `ComfyUI/custom_nodes/` 目录
