@@ -7,6 +7,8 @@ ComfyUI的交互式图像剪裁节点，支持可视化调整和所见即所得�
 <img width="1194" height="711" alt="ScreenShot_2025-11-28_124434_409" src="https://github.com/user-attachments/assets/f1538204-cf3f-4018-a5ea-848cd63601eb" />
 <img width="1417" height="548" alt="ScreenShot_2025-11-28_124452_968" src="https://github.com/user-attachments/assets/a10b5cf0-3b33-4573-8e95-a7e1f96a78e2" />
 <img width="1789" height="627" alt="ScreenShot_2025-11-28_124502_633" src="https://github.com/user-attachments/assets/c5433cb8-e127-4eba-8e51-c12b1092c315" />
+<img width="997" height="814" alt="ScreenShot_2025-11-29_153638_089" src="https://github.com/user-attachments/assets/362245b5-7029-4141-be0b-5dcad232020f" />
+
 
 ## 注意
 当多个节点时impact的搭配桥接预览使用！
