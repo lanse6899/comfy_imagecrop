@@ -329,14 +329,21 @@ Object.assign(LGraphNode.prototype, {
         
         // 鼠标拖拽 - 只移动图像，不移动剪裁框
         canvas.addEventListener('mousedown', (e) => {
+            // 只在左键点击时处理
+            if (e.button !== 0) return;
+            
             panel.isDragging = true;
             panel.lastX = e.clientX;
             panel.lastY = e.clientY;
             area.style.cursor = 'grabbing';
+            
+            // 只阻止canvas上的默认行为，不影响其他区域
             e.preventDefault();
+            e.stopPropagation();
         });
         
         const mouseMoveHandler = (e) => {
+            // 只在拖拽状态下处理，避免干扰其他操作
             if (!panel.isDragging) return;
             
             const dx = e.clientX - panel.lastX;
@@ -353,7 +360,19 @@ Object.assign(LGraphNode.prototype, {
             
             // 重绘Canvas
             this.drawCanvas();
-            // 只阻止默认行为，不阻止事件传播
+            
+            // 只在拖拽时阻止默认行为
+            e.preventDefault();
+        };
+        
+        const mouseUpHandler = (e) => {
+            // 只在拖拽状态下处理
+            if (!panel.isDragging) return;
+            
+            panel.isDragging = false;
+            area.style.cursor = 'grab';
+            
+            // 拖拽结束时阻止默认行为
             e.preventDefault();
         };
         
@@ -361,16 +380,9 @@ Object.assign(LGraphNode.prototype, {
         panel.eventHandlers.mouseMoveHandler = mouseMoveHandler;
         panel.eventHandlers.mouseUpHandler = mouseUpHandler;
         
-        document.addEventListener('mousemove', mouseMoveHandler);
-        
-        const mouseUpHandler = () => {
-            if (panel.isDragging) {
-                panel.isDragging = false;
-                area.style.cursor = 'grab';
-            }
-        };
-        
-        document.addEventListener('mouseup', mouseUpHandler);
+        // 使用全局事件监听器处理拖拽，但添加条件检查
+        document.addEventListener('mousemove', mouseMoveHandler, { passive: false });
+        document.addEventListener('mouseup', mouseUpHandler, { passive: false });
         
         // 滚轮缩放 - 缩放图像视图并更新scale参数
         const handleWheel = (e) => {
@@ -403,7 +415,7 @@ Object.assign(LGraphNode.prototype, {
         area.addEventListener('wheel', handleWheel, { passive: false });
         
         // 双击重置 - 重置视图状态
-        canvas.addEventListener('dblclick', () => {
+        canvas.addEventListener('dblclick', (e) => {
             panel.imageOffsetX = 0;
             panel.imageOffsetY = 0;
             panel.viewScale = 1.0;
@@ -417,6 +429,23 @@ Object.assign(LGraphNode.prototype, {
             
             this.drawCanvas();
             console.log('View reset');
+            
+            // 阻止双击事件传播，但不影响键盘事件
+            e.preventDefault();
+            e.stopPropagation();
+        });
+        
+        // 确保canvas不会获得焦点，避免捕获键盘事件
+        canvas.setAttribute('tabindex', '-1');
+        area.setAttribute('tabindex', '-1');
+        
+        // 防止canvas区域捕获键盘事件，确保剪贴板功能正常
+        canvas.addEventListener('focus', (e) => {
+            e.target.blur(); // 立即失去焦点
+        });
+        
+        area.addEventListener('focus', (e) => {
+            e.target.blur(); // 立即失去焦点
         });
         
         // 旋转按钮事件

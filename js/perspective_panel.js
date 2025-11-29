@@ -227,7 +227,21 @@ app.registerExtension({
                         panel.dragPointIndex = pointIndex;
                         canvas.style.cursor = 'move';
                         e.preventDefault();
+                        e.stopPropagation();
                     }
+                });
+                
+                // 确保canvas不会获得焦点，避免捕获键盘事件
+                canvas.setAttribute('tabindex', '-1');
+                canvasArea.setAttribute('tabindex', '-1');
+                
+                // 防止canvas区域捕获键盘事件，确保剪贴板功能正常
+                canvas.addEventListener('focus', (e) => {
+                    e.target.blur();
+                });
+                
+                canvasArea.addEventListener('focus', (e) => {
+                    e.target.blur();
                 });
                 
                 // 鼠标移动 - 拖拽角点或显示悬停效果
