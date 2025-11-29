@@ -2,6 +2,13 @@
 
 ComfyUI 交互式图像处理节点，支持可视化剪裁、透视校正和图像拉直。
 
+<img width="1619" height="701" alt="ScreenShot_2025-11-29_161715_250" src="https://github.com/user-attachments/assets/7f0b28ab-5c38-4c85-9083-76e374e77c0f" />
+<img width="997" height="814" alt="ScreenShot_2025-11-29_153638_089" src="https://github.com/user-attachments/assets/4caf9db7-ac8c-48e7-b988-ae38d813a7ad" />
+
+
+## 📦 注意！
+交互裁切节点当多个节点用时，请用impact里的桥接预览图像连接！
+
 ## 📦 安装
 
 1. 下载并解压到 `ComfyUI/custom_nodes/` 目录
