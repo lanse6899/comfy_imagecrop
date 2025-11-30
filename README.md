@@ -4,6 +4,7 @@ ComfyUI 交互式图像处理节点，支持可视化剪裁、透视校正和图
 
 <img width="1619" height="701" alt="ScreenShot_2025-11-29_161715_250" src="https://github.com/user-attachments/assets/7f0b28ab-5c38-4c85-9083-76e374e77c0f" />
 <img width="997" height="814" alt="ScreenShot_2025-11-29_153638_089" src="https://github.com/user-attachments/assets/4caf9db7-ac8c-48e7-b988-ae38d813a7ad" />
+<img width="715" height="516" alt="ScreenShot_2025-11-30_135642_792" src="https://github.com/user-attachments/assets/67d992f8-997a-4d71-b26e-b30c866a2814" />
 
 
 ## 📦 注意！
