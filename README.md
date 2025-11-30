@@ -4,8 +4,7 @@ ComfyUI 交互式图像处理节点，支持可视化剪裁、透视校正和图
 
 <img width="1619" height="701" alt="ScreenShot_2025-11-29_161715_250" src="https://github.com/user-attachments/assets/7f0b28ab-5c38-4c85-9083-76e374e77c0f" />
 <img width="997" height="814" alt="ScreenShot_2025-11-29_153638_089" src="https://github.com/user-attachments/assets/4caf9db7-ac8c-48e7-b988-ae38d813a7ad" />
-<img width="715" height="516" alt="ScreenShot_2025-11-30_135642_792" src="https://github.com/user-attachments/assets/67d992f8-997a-4d71-b26e-b30c866a2814" />
-
+<img width="1201" height="669" alt="ScreenShot_2025-11-30_140607_689" src="https://github.com/user-attachments/assets/d4cb9172-8a52-49f6-9d5c-9e1b61b9c136" />
 
 ## 📦 注意！
 交互裁切节点当多个节点用时，请用impact里的桥接预览图像连接！
@@ -33,6 +32,9 @@ ComfyUI 交互式图像处理节点，支持可视化剪裁、透视校正和图
 - **参考线绘制**: 在图像上绘制参考线
 - **自动计算**: 根据参考线自动计算倾斜角度
 - **智能裁剪**: 自动裁剪旋转后的黑边
+
+### 🔵BB 图像标注
+- **标注绘制**: 在图像上标注序号和图标
 
 ## 🎮 使用方法
 
