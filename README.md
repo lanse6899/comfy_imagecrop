@@ -4,7 +4,8 @@ ComfyUI 交互式图像处理节点，支持可视化剪裁、透视校正和图
 
 <img width="1619" height="701" alt="ScreenShot_2025-11-29_161715_250" src="https://github.com/user-attachments/assets/7f0b28ab-5c38-4c85-9083-76e374e77c0f" />
 <img width="997" height="814" alt="ScreenShot_2025-11-29_153638_089" src="https://github.com/user-attachments/assets/4caf9db7-ac8c-48e7-b988-ae38d813a7ad" />
-<img width="1201" height="669" alt="ScreenShot_2025-11-30_140607_689" src="https://github.com/user-attachments/assets/d4cb9172-8a52-49f6-9d5c-9e1b61b9c136" />
+<img width="1120" height="795" alt="ScreenShot_2025-12-01_093901_521" src="https://github.com/user-attachments/assets/4b31b39e-7782-45d2-b2c1-78954b076b2f" />
+
 
 ## 📦 注意！
 交互裁切节点当多个节点用时，请用impact里的桥接预览图像连接！
