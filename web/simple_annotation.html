@@ -1,0 +1,1412 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    :root {
+      --bg-primary: #1a1a2e;
+      --bg-secondary: #16213e;
+      --border-color: #0f3460;
+      --accent-color: #e94560;
+      --text-primary: #eaeaea;
+      --text-secondary: #888;
+      --hover-bg: rgba(255, 255, 255, 0.05);
+      --input-bg: rgba(255, 255, 255, 0.1);
+      --shadow-color: rgba(0, 0, 0, 0.3);
+    }
+
+    :root.light {
+      --bg-primary: #f5f7fa;
+      --bg-secondary: #ffffff;
+      --border-color: #e1e5eb;
+      --accent-color: #667eea;
+      --text-primary: #333333;
+      --text-secondary: #666666;
+      --hover-bg: rgba(0, 0, 0, 0.05);
+      --input-bg: #f0f2f5;
+      --shadow-color: rgba(0, 0, 0, 0.1);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .sidebar {
+      width: 300px;
+      background: var(--bg-secondary);
+      padding: 16px 24px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      border-right: 1px solid var(--border-color);
+      overflow-y: auto;
+      flex-shrink: 0;
+      height: 100vh;
+    }
+
+    .header-row {
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .logo {
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--accent-color);
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .theme-toggle {
+      background: var(--input-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      padding: 6px 12px;
+      font-size: 12px;
+      cursor: pointer;
+      color: var(--text-primary);
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+
+    .theme-toggle:hover {
+      background: var(--hover-bg);
+    }
+
+    .refresh-btn {
+      background: var(--input-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      padding: 6px 12px;
+      font-size: 12px;
+      cursor: pointer;
+      color: var(--text-primary);
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+
+    .refresh-btn:hover {
+      background: var(--hover-bg);
+    }
+
+    .upload-btn {
+      width: 100%;
+      padding: 12px;
+      background: var(--accent-color);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .upload-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px var(--shadow-color);
+    }
+
+    .section {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .section-title {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+
+    .content-selector {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .tab-buttons {
+      display: flex;
+      gap: 8px;
+    }
+
+    .tab-btn {
+      flex: 1;
+      padding: 10px;
+      background: #0f3460;
+      border: none;
+      border-radius: 8px;
+      color: #aaa;
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .tab-btn.active {
+      background: #e94560;
+      color: #fff;
+    }
+
+    .tab-btn:hover:not(.active) {
+      background: var(--hover-bg);
+    }
+
+    .option-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 6px;
+      max-height: 150px;
+      overflow-y: auto;
+      padding: 4px;
+      background: var(--input-bg);
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+    }
+
+    .option-grid::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .option-grid::-webkit-scrollbar-track {
+      background: var(--border-color);
+      border-radius: 3px;
+    }
+
+    .option-grid::-webkit-scrollbar-thumb {
+      background: var(--accent-color);
+      border-radius: 3px;
+    }
+
+    .option-item {
+      padding: 8px 4px;
+      background: var(--bg-secondary);
+      border: 2px solid transparent;
+      border-radius: 6px;
+      text-align: center;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 500;
+      transition: all 0.2s;
+      color: var(--text-primary);
+    }
+
+    .option-item:hover {
+      background: var(--hover-bg);
+    }
+
+    .option-item.selected {
+      border-color: var(--accent-color);
+      background: var(--accent-color);
+      color: #fff;
+    }
+
+    .color-palette {
+      display: flex;
+      gap: 8px;
+      flex-wrap: nowrap;
+      align-items: center;
+      overflow-x: auto;
+    }
+
+    .color-btn {
+      width: 32px;
+      height: 32px;
+      min-width: 32px;
+      border-radius: 50%;
+      border: 3px solid transparent;
+      cursor: pointer;
+      transition: all 0.2s;
+      position: relative;
+    }
+
+    .color-btn:hover {
+      transform: scale(1.1);
+    }
+
+    .color-btn.selected {
+      border-color: #fff;
+      box-shadow: 0 0 0 2px var(--accent-color);
+    }
+
+    .color-btn.applied {
+      box-shadow: 0 0 0 3px var(--accent-color), 0 0 10px var(--shadow-color);
+    }
+
+    .color-picker-wrapper {
+      position: relative;
+      width: 32px;
+      height: 32px;
+      min-width: 32px;
+      overflow: hidden;
+      border-radius: 50%;
+    }
+
+    .color-picker-wrapper input[type="color"] {
+      position: absolute;
+      top: -10px;
+      left: -10px;
+      width: 52px;
+      height: 52px;
+      border: none;
+      padding: 0;
+      cursor: pointer;
+      background: transparent;
+    }
+
+    .color-picker-preview {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      border: 3px dashed var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      color: var(--text-secondary);
+      pointer-events: none;
+      transition: all 0.2s;
+      background: var(--input-bg);
+      position: relative;
+      z-index: 0;
+    }
+
+    .color-picker-wrapper:hover .color-picker-preview {
+      border-color: var(--accent-color);
+      color: var(--accent-color);
+    }
+
+    .size-control {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .size-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .size-value {
+      background: var(--input-bg);
+      padding: 4px 12px;
+      border-radius: 4px;
+      font-size: 13px;
+      color: var(--text-primary);
+      border: 1px solid var(--border-color);
+    }
+
+    .size-slider {
+      -webkit-appearance: none;
+      width: 100%;
+      height: 6px;
+      border-radius: 3px;
+      background: var(--input-bg);
+      outline: none;
+    }
+
+    .size-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: var(--accent-color);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .size-slider::-webkit-slider-thumb:hover {
+      transform: scale(1.2);
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 20px;
+      color: var(--text-secondary);
+      font-size: 13px;
+    }
+
+    .canvas-container {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--bg-primary);
+      position: relative;
+      overflow: hidden;
+      min-height: 200px;
+    }
+
+    .canvas-wrapper {
+      position: absolute;
+      box-shadow: 0 10px 40px var(--shadow-color);
+    }
+
+    #mainCanvas {
+      display: block;
+      cursor: crosshair;
+    }
+
+    .canvas-wrapper.panning #mainCanvas {
+      cursor: grab;
+    }
+
+    .canvas-wrapper.panning:active #mainCanvas {
+      cursor: grabbing;
+    }
+
+    .canvas-placeholder {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-secondary);
+      gap: 16px;
+    }
+
+    .placeholder-icon {
+      font-size: 80px;
+      opacity: 0.3;
+    }
+
+    .placeholder-text {
+      font-size: 18px;
+    }
+
+    .placeholder-hint {
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    .placeholder-icon,
+    .placeholder-text,
+    .placeholder-hint {
+      cursor: pointer;
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .action-btn {
+      flex: 1;
+      padding: 10px;
+      border: none;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      color: #fff;
+    }
+
+    .action-btn.primary {
+      background: var(--accent-color);
+    }
+
+    .action-btn.primary:hover {
+      filter: brightness(0.9);
+    }
+
+    .action-btn.danger {
+      background: var(--hover-bg);
+      color: var(--accent-color);
+      border: 1px solid var(--accent-color);
+    }
+
+    .action-btn.danger:hover {
+      background: var(--accent-color);
+      color: #fff;
+    }
+
+    .action-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .instructions {
+      background: var(--hover-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 12px;
+      font-size: 12px;
+      color: var(--accent-color);
+      line-height: 1.6;
+    }
+
+    .instructions strong {
+      color: var(--text-primary);
+    }
+
+    .clear-btn {
+      width: 100%;
+      padding: 10px;
+      background: transparent;
+      border: 1px solid var(--accent-color);
+      border-radius: 8px;
+      color: var(--accent-color);
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-top: auto;
+    }
+
+    .clear-btn:hover {
+      background: var(--accent-color);
+      color: #fff;
+    }
+
+    .prompt-area {
+      background: var(--bg-secondary);
+      padding: 16px;
+      flex-shrink: 0;
+      border-top: 1px solid var(--border-color);
+    }
+
+    .prompt-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .prompt-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .prompt-copy {
+      padding: 6px 12px;
+      background: var(--input-bg);
+      border: none;
+      border-radius: 6px;
+      font-size: 12px;
+      color: var(--text-primary);
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .prompt-copy:hover {
+      background: var(--hover-bg);
+    }
+
+    .prompt-input {
+      width: 100%;
+      height: 40px;
+      padding: 8px 12px;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      font-size: 14px;
+      font-family: inherit;
+      box-sizing: border-box;
+      background: var(--input-bg);
+      color: var(--text-primary);
+    }
+
+    .prompt-input:focus {
+      outline: none;
+      border-color: var(--accent-color);
+    }
+
+    .prompt-input::placeholder {
+      color: var(--text-secondary);
+    }
+
+    .context-menu {
+      position: fixed;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      box-shadow: 0 4px 12px var(--shadow-color);
+      z-index: 1000;
+      overflow: hidden;
+    }
+
+    .context-menu-item {
+      padding: 10px 16px;
+      color: var(--text-primary);
+      cursor: pointer;
+      font-size: 14px;
+      transition: background 0.2s;
+    }
+
+    .context-menu-item:hover {
+      background: var(--hover-bg);
+    }
+
+    .main-area {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    .app-container {
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+    }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+  <div class="sidebar">
+    <div class="header-row">
+      <div class="header-actions">
+        <div class="logo">Simple Annotation</div>
+        <button class="refresh-btn" id="refreshBtn">刷新图像</button>
+        <button class="theme-toggle" id="themeToggle">浅色</button>
+      </div>
+    </div>
+
+    <div class="section">
+      <button class="upload-btn" id="uploadBtn">上传图片</button>
+    </div>
+
+    <input type="file" id="fileInput" accept="image/*" style="display: none;">
+
+    <div class="section">
+      <div class="section-title">标注内容</div>
+      <div class="content-selector">
+        <div class="tab-buttons">
+          <button class="tab-btn active" data-tab="numbers">数字 1-10</button>
+          <button class="tab-btn" data-tab="letters">字母 A-Z</button>
+        </div>
+        <div class="option-grid" id="optionGrid"></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">标注颜色</div>
+      <div class="color-palette" id="colorPalette"></div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">标注大小</div>
+      <div class="size-control">
+        <div class="size-header">
+          <span>尺寸</span>
+          <span class="size-value" id="sizeValue">40px</span>
+        </div>
+        <input type="range" class="size-slider" id="sizeSlider" min="20" max="200" value="40">
+      </div>
+      <div class="size-control">
+        <div class="size-header">
+          <span>文字大小</span>
+          <span class="size-value" id="textSizeValue">16px</span>
+        </div>
+        <input type="range" class="size-slider" id="textSizeSlider" min="8" max="200" value="16">
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">提示词标注词</div>
+      <input type="text" class="prompt-input" id="promptLabelInput" value="标注" placeholder="自定义标注词，如：标注、标记、注释">
+    </div>
+
+    <div class="section">
+      <div class="action-buttons">
+        <button class="action-btn primary" id="exportBtn">导出图像</button>
+        <button class="action-btn primary" id="addToPromptBtn">添加标注到提示词</button>
+        <button class="action-btn danger" id="deleteBtn" disabled>删除选中</button>
+      </div>
+    </div>
+
+    <button class="clear-btn" id="clearAllBtn">清除所有标注</button>
+  </div>
+
+  <div class="main-area">
+    <div class="canvas-container" id="canvasContainer">
+      <div class="canvas-placeholder" id="placeholder">
+        <div class="placeholder-icon">+</div>
+        <div class="placeholder-text">请上传图片开始标注</div>
+        <div class="placeholder-hint">支持 JPG, PNG, GIF, WebP 格式</div>
+      </div>
+    </div>
+
+    <div class="prompt-area">
+      <div class="prompt-header">
+        <span class="prompt-title">提示词</span>
+        <button class="prompt-copy" id="copyPromptBtn">复制</button>
+      </div>
+      <textarea class="prompt-input" id="promptInput" placeholder="在此输入提示词..."></textarea>
+    </div>
+  </div>
+
+  <script>
+    const COLORS = [
+      '#ff6b6b', '#4ecdc4', '#ffe66d', '#95e1d3', '#f38181'
+    ];
+
+    const state = {
+      image: null,
+      markers: [],
+      selectedMarkerId: null,
+      currentTab: 'numbers',
+      selectedOption: '1',
+      selectedColor: COLORS[0],
+      markerSize: 40,
+      textSize: 16,
+      isDragging: false,
+      dragMarkerId: null,
+      dragOffsetX: 0,
+      dragOffsetY: 0,
+      isPanning: false,
+      panStartX: 0,
+      panStartY: 0,
+      colorAppliedToSelected: false,
+      promptText: '',
+      promptLabel: '标注',
+      zoom: 1,
+      panX: 0,
+      panY: 0
+    };
+
+    const placeholder = document.getElementById('placeholder');
+    const canvasContainer = document.getElementById('canvasContainer');
+    const optionGrid = document.getElementById('optionGrid');
+    const colorPalette = document.getElementById('colorPalette');
+    const sizeSlider = document.getElementById('sizeSlider');
+    const sizeValue = document.getElementById('sizeValue');
+    const textSizeSlider = document.getElementById('textSizeSlider');
+    const textSizeValue = document.getElementById('textSizeValue');
+    const deleteBtn = document.getElementById('deleteBtn');
+    const clearAllBtn = document.getElementById('clearAllBtn');
+    const addToPromptBtn = document.getElementById('addToPromptBtn');
+    const exportBtn = document.getElementById('exportBtn');
+    const fileInput = document.getElementById('fileInput');
+
+    let canvas, ctx, canvasWrapper;
+
+    function triggerFileUpload() {
+      fileInput.click();
+    }
+
+    function generateId() {
+      return 'marker_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+    }
+
+    function initCanvas() {
+      if (canvas) {
+        canvas.remove();
+      }
+      if (canvasWrapper) {
+        canvasWrapper.remove();
+      }
+
+      canvasWrapper = document.createElement('div');
+      canvasWrapper.className = 'canvas-wrapper';
+      canvasContainer.appendChild(canvasWrapper);
+
+      canvas = document.createElement('canvas');
+      canvas.id = 'mainCanvas';
+      ctx = canvas.getContext('2d');
+
+      canvasWrapper.appendChild(canvas);
+      placeholder.style.display = 'none';
+
+      canvas.addEventListener('click', (e) => {
+        handleCanvasClick(e);
+      });
+
+      canvas.addEventListener('mousedown', (e) => {
+        if (e.button === 2) {
+          e.preventDefault();
+          state.isPanning = true;
+          state.panStartX = e.clientX;
+          state.panStartY = e.clientY;
+          canvasWrapper.classList.add('panning');
+        }
+      });
+
+      resizeCanvas();
+      redraw();
+    }
+
+    function setZoom(newZoom) {
+      state.zoom = Math.max(0.1, Math.min(5, newZoom));
+      updateCanvasTransform();
+    }
+
+    function updateCanvasTransform() {
+      if (canvasWrapper) {
+        canvasWrapper.style.transform = `translate(${state.panX}px, ${state.panY}px) scale(${state.zoom})`;
+      }
+    }
+
+    function handleWheel(e) {
+      e.preventDefault();
+      const delta = e.deltaY > 0 ? -0.1 : 0.1;
+      setZoom(state.zoom + delta);
+    }
+
+    function centerCanvas() {
+      canvasWrapper.style.left = (canvasContainer.offsetWidth - canvas.width) / 2 + 'px';
+      canvasWrapper.style.top = (canvasContainer.offsetHeight - canvas.height) / 2 + 'px';
+    }
+
+    function resizeCanvas() {
+      if (!state.image) return;
+
+      const containerRect = canvasContainer.getBoundingClientRect();
+      const containerWidth = containerRect.width - 80;
+      const containerHeight = containerRect.height - 80;
+
+      let width = state.image.width;
+      let height = state.image.height;
+
+      const scaleX = containerWidth / width;
+      const scaleY = containerHeight / height;
+      const baseScale = Math.min(scaleX, scaleY, 1);
+
+      canvas.width = width * baseScale;
+      canvas.height = height * baseScale;
+      canvas.style.width = canvas.width + 'px';
+      canvas.style.height = canvas.height + 'px';
+      canvas.style.display = 'block';
+
+      centerCanvas();
+      redraw();
+    }
+
+    function drawDroplet(x, y, size, color, content, textSize) {
+      ctx.save();
+
+      const radius = size * 0.45;
+
+      ctx.beginPath();
+      ctx.arc(x, y, radius, 0, Math.PI * 2);
+      ctx.fillStyle = color;
+      ctx.fill();
+
+      ctx.fillStyle = '#fff';
+      ctx.font = `bold ${textSize}px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(content, x, y);
+
+      ctx.restore();
+    }
+
+    function lightenColor(hex, percent) {
+      const num = parseInt(hex.replace('#', ''), 16);
+      const amt = Math.round(2.55 * percent);
+      const R = Math.min(255, (num >> 16) + amt);
+      const G = Math.min(255, ((num >> 8) & 0x00FF) + amt);
+      const B = Math.min(255, (num & 0x0000FF) + amt);
+      return `rgb(${R}, ${G}, ${B})`;
+    }
+
+    function darkenColor(hex, percent) {
+      const num = parseInt(hex.replace('#', ''), 16);
+      const amt = Math.round(2.55 * percent);
+      const R = Math.max(0, (num >> 16) - amt);
+      const G = Math.max(0, ((num >> 8) & 0x00FF) - amt);
+      const B = Math.max(0, (num & 0x0000FF) - amt);
+      return `rgb(${R}, ${G}, ${B})`;
+    }
+
+    function redraw() {
+      if (!ctx || !state.image) return;
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // 使用 canvas 的 CSS 显示尺寸计算缩放比例
+      const displayWidth = parseFloat(canvas.style.width) || canvas.width;
+      const displayHeight = parseFloat(canvas.style.height) || canvas.height;
+      const scaleX = displayWidth / state.image.width;
+      const scaleY = displayHeight / state.image.height;
+
+      ctx.drawImage(state.image, 0, 0, displayWidth, displayHeight);
+
+      state.markers.forEach(marker => {
+        const x = marker.x * scaleX;
+        const y = marker.y * scaleY;
+
+        if (marker.id === state.selectedMarkerId) {
+          ctx.save();
+          ctx.beginPath();
+          const selRadius = marker.size * scaleX * 0.65;
+          ctx.arc(x, y, selRadius, 0, Math.PI * 2);
+          ctx.strokeStyle = '#4ecdc4';
+          ctx.lineWidth = 3;
+          ctx.setLineDash([5, 5]);
+          ctx.stroke();
+          ctx.restore();
+        }
+
+        drawDroplet(x, y, marker.size * scaleX, marker.color, marker.content, marker.textSize * scaleX);
+      });
+
+      updateMinimap();
+    }
+
+    function renderOptionGrid() {
+      optionGrid.innerHTML = '';
+
+      const items = state.currentTab === 'numbers'
+        ? Array.from({ length: 10 }, (_, i) => String(i + 1))
+        : Array.from({ length: 26 }, (_, i) => String.fromCharCode(65 + i));
+
+      items.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'option-item' + (item === state.selectedOption ? ' selected' : '');
+        div.textContent = item;
+        div.addEventListener('click', () => {
+          state.selectedOption = item;
+          renderOptionGrid();
+        });
+        optionGrid.appendChild(div);
+      });
+    }
+
+    function renderColorPalette() {
+      colorPalette.innerHTML = '';
+
+      const selectedMarker = state.markers.find(m => m.id === state.selectedMarkerId);
+
+      COLORS.forEach(color => {
+        const btn = document.createElement('button');
+        const isCurrentColor = color === state.selectedColor;
+        const isAppliedToSelected = selectedMarker && selectedMarker.color === color;
+        btn.className = 'color-btn';
+        if (isCurrentColor) btn.classList.add('selected');
+        if (isAppliedToSelected && state.colorAppliedToSelected) btn.classList.add('applied');
+        btn.style.backgroundColor = color;
+        btn.addEventListener('click', () => {
+          state.selectedColor = color;
+          state.colorAppliedToSelected = true;
+          const currentSelectedMarker = state.markers.find(m => m.id === state.selectedMarkerId);
+          if (currentSelectedMarker) {
+            currentSelectedMarker.color = color;
+            redraw();
+          }
+          renderColorPalette();
+        });
+        colorPalette.appendChild(btn);
+      });
+
+      const pickerWrapper = document.createElement('div');
+      pickerWrapper.className = 'color-picker-wrapper';
+      pickerWrapper.innerHTML = `
+        <input type="color" id="customColorPicker" value="${state.selectedColor}">
+        <div class="color-picker-preview">+</div>
+      `;
+      colorPalette.appendChild(pickerWrapper);
+
+      const picker = pickerWrapper.querySelector('#customColorPicker');
+      picker.addEventListener('input', (e) => {
+        state.selectedColor = e.target.value;
+        const currentSelectedMarker = state.markers.find(m => m.id === state.selectedMarkerId);
+        if (currentSelectedMarker) {
+          currentSelectedMarker.color = e.target.value;
+          state.colorAppliedToSelected = true;
+          redraw();
+        }
+        document.querySelectorAll('.color-btn').forEach(btn => {
+          btn.classList.remove('selected');
+        });
+      });
+      picker.addEventListener('change', (e) => {
+        state.selectedColor = e.target.value;
+        renderColorPalette();
+      });
+    }
+
+    function addMarker(x, y) {
+      // 使用 canvas 的 CSS 显示尺寸计算缩放比例
+      const displayWidth = parseFloat(canvas.style.width);
+      const displayHeight = parseFloat(canvas.style.height);
+      const scaleX = displayWidth / state.image.width;
+      const scaleY = displayHeight / state.image.height;
+
+      const marker = {
+        id: generateId(),
+        x: x / scaleX,
+        y: y / scaleY,
+        content: state.selectedOption,
+        color: state.selectedColor,
+        size: state.markerSize,
+        textSize: state.textSize
+      };
+
+      state.markers.push(marker);
+      state.selectedMarkerId = marker.id;
+      state.colorAppliedToSelected = true;
+      deleteBtn.disabled = false;
+
+      redraw();
+      renderColorPalette();
+      notifyDataChanged();
+    }
+
+    function deleteMarker(id) {
+      state.markers = state.markers.filter(m => m.id !== id);
+      if (state.selectedMarkerId === id) {
+        state.selectedMarkerId = null;
+        deleteBtn.disabled = true;
+      }
+      redraw();
+      notifyDataChanged();
+    }
+
+    function clearAllMarkers() {
+      state.markers = [];
+      state.selectedMarkerId = null;
+      deleteBtn.disabled = true;
+      redraw();
+      notifyDataChanged();
+    }
+
+    function getMarkerAtPosition(x, y) {
+      // 使用 canvas 的 CSS 显示尺寸计算缩放比例
+      const displayWidth = parseFloat(canvas.style.width);
+      const displayHeight = parseFloat(canvas.style.height);
+      const scaleX = displayWidth / state.image.width;
+      const scaleY = displayHeight / state.image.height;
+
+      for (let i = state.markers.length - 1; i >= 0; i--) {
+        const marker = state.markers[i];
+        const mx = marker.x * scaleX;
+        const my = marker.y * scaleY;
+        const hitRadius = marker.size * scaleX * 0.8;
+
+        const dx = x - mx;
+        const dy = y - my;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+
+        if (dist < hitRadius) {
+          return marker;
+        }
+      }
+      return null;
+    }
+
+    function handleCanvasClick(e) {
+      if (state.isDragging) return;
+
+      const rect = canvas.getBoundingClientRect();
+      const x = (e.clientX - rect.left) / state.zoom;
+      const y = (e.clientY - rect.top) / state.zoom;
+
+      const marker = getMarkerAtPosition(x, y);
+
+      if (marker) {
+        state.selectedMarkerId = marker.id;
+        state.colorAppliedToSelected = true;
+        deleteBtn.disabled = false;
+        redraw();
+        renderColorPalette();
+      } else {
+        addMarker(x, y);
+      }
+    }
+
+    function handleCanvasMouseDown(e) {
+      const rect = canvas.getBoundingClientRect();
+      const x = (e.clientX - rect.left) / state.zoom;
+      const y = (e.clientY - rect.top) / state.zoom;
+
+      const marker = getMarkerAtPosition(x, y);
+
+      if (marker) {
+        state.isDragging = true;
+        state.dragMarkerId = marker.id;
+        state.selectedMarkerId = marker.id;
+        state.colorAppliedToSelected = true;
+        deleteBtn.disabled = false;
+
+        // 使用 canvas 的 CSS 显示尺寸计算缩放比例
+        const displayWidth = parseFloat(canvas.style.width) || canvas.width;
+        const displayHeight = parseFloat(canvas.style.height) || canvas.height;
+        const scaleX = displayWidth / state.image.width;
+        const scaleY = displayHeight / state.image.height;
+        state.dragOffsetX = x - marker.x * scaleX;
+        state.dragOffsetY = y - marker.y * scaleY;
+
+        redraw();
+        renderColorPalette();
+      }
+    }
+
+    function handleCanvasMouseMove(e) {
+      if (!state.isDragging || !state.dragMarkerId) return;
+
+      const rect = canvas.getBoundingClientRect();
+      const x = (e.clientX - rect.left) / state.zoom;
+      const y = (e.clientY - rect.top) / state.zoom;
+
+      // 使用 canvas 的 CSS 显示尺寸计算缩放比例
+      const displayWidth = parseFloat(canvas.style.width) || canvas.width;
+      const displayHeight = parseFloat(canvas.style.height) || canvas.height;
+      const scaleX = displayWidth / state.image.width;
+      const scaleY = displayHeight / state.image.height;
+
+      const marker = state.markers.find(m => m.id === state.dragMarkerId);
+      if (marker) {
+        marker.x = (x - state.dragOffsetX) / scaleX;
+        marker.y = (y - state.dragOffsetY) / scaleY;
+
+        redraw();
+        notifyDataChanged();
+      }
+    }
+
+    function handleCanvasMouseUp() {
+      state.isDragging = false;
+      state.dragMarkerId = null;
+    }
+
+    function handleFileUpload(file) {
+      if (!file || !file.type.startsWith('image/')) return;
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+          state.image = img;
+          state.zoom = 1;
+          state.panX = 0;
+          state.panY = 0;
+          initCanvas();
+          notifyImageLoaded();
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        state.currentTab = btn.dataset.tab;
+        state.selectedOption = state.currentTab === 'numbers' ? '1' : 'A';
+        renderOptionGrid();
+      });
+    });
+
+    sizeSlider.addEventListener('input', (e) => {
+      state.markerSize = parseInt(e.target.value);
+      sizeValue.textContent = state.markerSize + 'px';
+      state.markers.forEach(m => m.size = state.markerSize);
+      redraw();
+      notifyDataChanged();
+    });
+
+    textSizeSlider.addEventListener('input', (e) => {
+      state.textSize = parseInt(e.target.value);
+      textSizeValue.textContent = state.textSize + 'px';
+      state.markers.forEach(m => m.textSize = state.textSize);
+      redraw();
+      notifyDataChanged();
+    });
+
+    deleteBtn.addEventListener('click', () => {
+      if (state.selectedMarkerId) {
+        deleteMarker(state.selectedMarkerId);
+      }
+    });
+
+    clearAllBtn.addEventListener('click', () => {
+      if (state.markers.length > 0 && confirm('确定要清除所有标注吗？')) {
+        clearAllMarkers();
+      }
+    });
+
+    // 右键菜单功能
+    const contextMenu = document.createElement('div');
+    contextMenu.id = 'contextMenu';
+    contextMenu.className = 'context-menu';
+    const promptLabelInput = document.getElementById('promptLabelInput');
+    function getContextMenuText() {
+      return state.promptLabel || '标注';
+    }
+    contextMenu.innerHTML = `<div class="context-menu-item">添加到提示词</div>`;
+    contextMenu.style.display = 'none';
+    document.body.appendChild(contextMenu);
+
+    function showContextMenu(e) {
+      e.preventDefault();
+      const rect = canvas.getBoundingClientRect();
+      const x = (e.clientX - rect.left) / state.zoom;
+      const y = (e.clientY - rect.top) / state.zoom;
+      const marker = getMarkerAtPosition(x, y);
+      if (marker) {
+        state.selectedMarkerId = marker.id;
+        redraw();
+        contextMenu.style.display = 'block';
+        contextMenu.style.left = e.clientX + 'px';
+        contextMenu.style.top = e.clientY + 'px';
+        contextMenu.dataset.markerId = marker.id;
+      }
+    }
+
+    function hideContextMenu() {
+      contextMenu.style.display = 'none';
+    }
+
+    contextMenu.addEventListener('click', (e) => {
+      const markerId = contextMenu.dataset.markerId;
+      const marker = state.markers.find(m => m.id === markerId);
+      if (marker) {
+        const currentText = promptInput.value.trim();
+        const newText = `${getContextMenuText()}${marker.content}`;
+        // 使用逗号分隔多个标注
+        if (currentText) {
+          promptInput.value = `${currentText}，${newText}`;
+        } else {
+          promptInput.value = newText;
+        }
+        state.promptText = promptInput.value;
+        notifyDataChanged();
+      }
+      hideContextMenu();
+    });
+
+    promptLabelInput.value = state.promptLabel;
+
+    promptLabelInput.addEventListener('input', (e) => {
+      state.promptLabel = e.target.value;
+    });
+
+    document.addEventListener('click', hideContextMenu);
+
+    canvasContainer.addEventListener('contextmenu', showContextMenu);
+
+    const uploadBtn = document.getElementById('uploadBtn');
+    uploadBtn.addEventListener('click', () => {
+      fileInput.click();
+    });
+
+    fileInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      handleFileUpload(file);
+    });
+
+    canvasContainer.addEventListener('mousedown', (e) => {
+      handleCanvasMouseDown(e);
+    });
+
+    canvasContainer.addEventListener('mousemove', (e) => {
+      if (state.isPanning) {
+        const dx = e.clientX - state.panStartX;
+        const dy = e.clientY - state.panStartY;
+        state.panX += dx;
+        state.panY += dy;
+        state.panStartX = e.clientX;
+        state.panStartY = e.clientY;
+        updateCanvasTransform();
+      }
+      handleCanvasMouseMove(e);
+    });
+
+    canvasContainer.addEventListener('mouseup', () => {
+      if (state.isPanning) {
+        state.isPanning = false;
+        canvasWrapper.classList.remove('panning');
+      }
+      handleCanvasMouseUp();
+    });
+
+    canvasContainer.addEventListener('mouseleave', () => {
+      if (state.isPanning) {
+        state.isPanning = false;
+        canvasWrapper.classList.remove('panning');
+      }
+      handleCanvasMouseUp();
+    });
+
+    placeholder.addEventListener('click', triggerFileUpload);
+
+    window.addEventListener('resize', () => {
+      if (state.image) {
+        resizeCanvas();
+      }
+    });
+
+    const promptInput = document.getElementById('promptInput');
+
+    // 监听提示词文本变化，自动同步到父窗口
+    promptInput.addEventListener('input', () => {
+      state.promptText = promptInput.value;
+      notifyDataChanged();
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Delete' && state.selectedMarkerId && document.activeElement !== promptInput) {
+        deleteMarker(state.selectedMarkerId);
+      }
+    });
+
+    const copyPromptBtn = document.getElementById('copyPromptBtn');
+    copyPromptBtn.addEventListener('click', () => {
+      navigator.clipboard.writeText(promptInput.value).then(() => {
+        copyPromptBtn.textContent = '已复制';
+        setTimeout(() => {
+          copyPromptBtn.textContent = '复制';
+        }, 1500);
+      });
+    });
+
+    const themeToggle = document.getElementById('themeToggle');
+    themeToggle.addEventListener('click', () => {
+      document.documentElement.classList.toggle('light');
+      const isLight = document.documentElement.classList.contains('light');
+      themeToggle.textContent = isLight ? '深色' : '浅色';
+    });
+
+    // 刷新按钮 - 请求父窗口刷新图像
+    const refreshBtn = document.getElementById('refreshBtn');
+    refreshBtn.addEventListener('click', () => {
+      console.log('SimpleAnnotation: Requesting image refresh');
+      state.imageLoaded = false;
+      window.parent.postMessage({ type: 'REFRESH_IMAGE' }, '*');
+    });
+
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'light') {
+      document.documentElement.classList.add('light');
+      themeToggle.textContent = '深色';
+    }
+
+    addToPromptBtn.addEventListener('click', () => {
+      if (state.selectedMarkerId) {
+        const marker = state.markers.find(m => m.id === state.selectedMarkerId);
+        if (marker) {
+          const currentText = promptInput.value.trim();
+          const labelText = `${state.promptLabel}${marker.content}`;
+          // 使用逗号分隔多个标注
+          if (currentText) {
+            promptInput.value = `${currentText}，${labelText}`;
+          } else {
+            promptInput.value = labelText;
+          }
+          state.promptText = promptInput.value;
+          notifyDataChanged();
+        }
+      } else {
+        const currentText = promptInput.value.trim();
+        if (currentText) {
+          promptInput.value = `${currentText}，${state.promptLabel}`;
+        } else {
+          promptInput.value = state.promptLabel;
+        }
+        state.promptText = promptInput.value;
+        notifyDataChanged();
+      }
+    });
+
+    exportBtn.addEventListener('click', () => {
+      if (!state.image) return;
+
+      const exportCanvas = document.createElement('canvas');
+      const exportCtx = exportCanvas.getContext('2d');
+      exportCanvas.width = state.image.width;
+      exportCanvas.height = state.image.height;
+
+      exportCtx.drawImage(state.image, 0, 0, state.image.width, state.image.height);
+
+      state.markers.forEach(marker => {
+        const radius = marker.size * 0.45;
+        exportCtx.beginPath();
+        exportCtx.arc(marker.x, marker.y, radius, 0, Math.PI * 2);
+        exportCtx.fillStyle = marker.color;
+        exportCtx.fill();
+
+        exportCtx.fillStyle = '#fff';
+        exportCtx.font = `bold ${marker.textSize}px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif`;
+        exportCtx.textAlign = 'center';
+        exportCtx.textBaseline = 'middle';
+        exportCtx.fillText(marker.content, marker.x, marker.y);
+      });
+
+      const link = document.createElement('a');
+      link.download = 'annotated-image.png';
+      link.href = exportCanvas.toDataURL('image/png');
+      link.click();
+    });
+
+    function updateMinimap() {
+      // Minimap functionality removed for simplicity
+    }
+
+    renderOptionGrid();
+    renderColorPalette();
+
+    canvasContainer.addEventListener('wheel', handleWheel, { passive: false });
+
+    // Notify parent iframe
+    function notifyImageLoaded() {
+      if (window.parent !== window) {
+        window.parent.postMessage({ type: 'ANNOTATION_IMAGE_LOADED' }, '*');
+      }
+    }
+
+    function notifyDataChanged() {
+      if (window.parent !== window) {
+        window.parent.postMessage({
+          type: 'ANNOTATION_DATA_CHANGED',
+          markers: state.markers,
+          promptText: promptInput.value
+        }, '*');
+      }
+    }
+
+    // Handle messages from parent
+    window.addEventListener('message', (e) => {
+      const data = e.data;
+      if (data.type === 'RESIZE') {
+        if (state.image) {
+          setTimeout(resizeCanvas, 100);
+        }
+      } else if (data.type === 'LOAD_IMAGE') {
+        // Load image from ComfyUI
+        const img = new Image();
+        img.crossOrigin = 'anonymous';
+        img.onload = () => {
+          state.image = img;
+          state.markers = [];
+          state.selectedMarkerId = null;
+          state.zoom = 1;
+          state.panX = 0;
+          state.panY = 0;
+          initCanvas();
+          notifyImageLoaded();
+        };
+        img.onerror = () => {
+          console.error('[SimpleAnnotation] Failed to load image from:', data.imageUrl);
+        };
+        img.src = data.imageUrl;
+      }
+    });
+
+    // Signal ready
+    if (window.parent !== window) {
+      window.parent.postMessage({ type: 'ANNOTATION_READY' }, '*');
+    }
+  </script>
+</body>
+</html>
